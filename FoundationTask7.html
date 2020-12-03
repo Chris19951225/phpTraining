@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Foundation Task 7</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/css">
+        div{
+
+        }
+    </script>
+    <script>
+        $(document).ready(function(){
+            function disableAll()
+            {
+                $("#createButton").prop('disabled',true);
+                $("#readButton").prop('disabled',true);
+                $("#updateButton").prop('disabled',true);
+                $("#deleteButton").prop('disabled',true);
+            }
+            function enableAll()
+            {
+                $("#createButton").prop('disabled',false);
+                $("#readButton").prop('disabled',false);
+                $("#updateButton").prop('disabled',false);
+                $("#deleteButton").prop('disabled',false);
+            }
+
+            $("#createButton").click(function(){
+                $("#creatediv").toggle();
+                disableAll();
+            });
+            $("#createNow").click(function(){
+                $("#creatediv").toggle();
+                enableAll();
+            });
+            $("#readButton").click(function(){
+                $("#readdiv").toggle();
+                disableAll();
+            });
+            $("#readNow").click(function(){
+                $("#readdiv").toggle();
+                enableAll();
+            });
+            $("#updateButton").click(function(){
+                $("#updatediv").toggle();
+                disableAll();
+            });
+            $("#updateNow").click(function(){
+                $("#updatediv").toggle();
+                enableAll();
+            });
+
+            $("#deleteButton").click(function(){
+                $("#deletediv").toggle();
+                disableAll();
+            });
+
+            $("#deletediv").click(function(){
+                $("#deletediv").toggle();
+                enableAll();
+            });
+        });
+    </script>
+
+</head>
+<body>
+
+    <h1>Foundation Task 7</h1>
+
+    <form>
+        <fieldset>
+            <legend>User Options</legend>
+            <input type="button" id="createButton" value="Create Person">
+            <input type="button" id="readButton" value="Read Person">
+            <input type="button" id="updateButton" value="Update Person">
+            <input type="button" id="deleteButton" value="Delete Person">
+        </fieldset>
+    </form>
+
+    <div id="creatediv" style="display: none">
+        <form>
+            <fieldset>
+                <legend>Create Person</legend>
+                <label for="fname">First name:</label>
+                <input type="text" id="fname" name="fname"><br/><br/>
+                <label for="sname">Surname:</label>
+                <input type="text" id="sname" name="sname"><br/><br/>
+                <label for="date">Date:</label>
+                <input type="date" id="date" name="date"><br/><br/>
+                <label for="email">E-mail:</label>
+                <input type="text" id="email" name="email"><br/><br/>
+                <label for="age">Age:</label>
+                <input type="number" id="age" name="age" min="0" max="130"><br/><br/>
+                <input type="button" id="createNow" value="Create Person">
+            </fieldset>
+            <div id="replyCreate"></div>
+        </form>
+    </div>
+    <div id="readdiv" style="display: none">
+        <form>
+            <fieldset>
+                <legend>Read Person</legend>
+                <label for="fnameRead">First name:</label>
+                <input type="text" id="fnameRead" name="readNow"><br/><br/>
+                <input type="button" id="readNow" value="Read Person">
+            </fieldset>
+            <div id="replyRead"></div>
+        </form>
+    </div>
+    <div id="updatediv" style="display: none">
+        <form>
+            <fieldset>
+                <legend>Update Person</legend>
+                <label for="fnameSelect">Name of Person you wish to update:</label>
+                <input type="text" id="fnameSelect" name="fnameSelect"><br/><br/>
+
+                <label for="fnameUpdate">First name:</label>
+                <input type="text" id="fnameUpdate" name="fnameUpdate"><br/><br/>
+                <label for="snameUpdate">Surname:</label>
+                <input type="text" id="snameUpdate" name="snameUpdate"><br/><br/>
+                <label for="dateUpdate">Date:</label>
+                <input type="date" id="dateUpdate" name="dateUpdate"><br/><br/>
+                <label for="emailUpdate">E-mail:</label>
+                <input type="text" id="emailUpdate" name="emailUpdate"><br/><br/>
+                <label for="ageUpdate">Age:</label>
+                <input type="number" id="ageUpdate" name="ageUpdate" min="0" max="130"><br/><br/>
+
+                <input type="button" id="updateNow" value="Update Person">
+            </fieldset>
+            <div id="replyUpdate"></div>
+        </form>
+    </div>
+    <div id="deletediv" style="display: none">
+        <form>
+            <fieldset>
+                <legend>Delete Person</legend>
+                <label for="fnameDelete">First name:</label>
+                <input type="text" id="fnameDelete" name="fnameDelete"><br/><br/>
+                <input type="button" id="deleteNow" value="Delete Person">
+            </fieldset>
+            <div id="replyDelete"></div>
+        </form>
+    </div>
+</body>
+</html>
