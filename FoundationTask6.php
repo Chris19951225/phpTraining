@@ -73,7 +73,6 @@
         private $username = "root";
         private $password = "Gothnumber666";
         private $dbname = "mysql";
-        private $success = false;
 
         public $fname = '';
         public $sname = '';
@@ -161,7 +160,7 @@
 
             // sql to create table
 
-            $sql = "DELETE FROM phptraining.Person WHERE firstname='".$this->fname."' AND surname='".$this->surname."'";
+            $sql = "DELETE FROM phptraining.Person WHERE firstname='".$this->fname."' AND surname='".$this->sname."'";
 
             if ($conn->query($sql) === TRUE) {
                 echo "Person deleted successfully";
@@ -246,7 +245,6 @@
             }
 
             $conn->close();
-            return;
         }
 
         function updatePerson($fnameSelect,$fname,$sname,$date,$email,$age)
