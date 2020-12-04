@@ -73,6 +73,7 @@
         private $username = "root";
         private $password = "Gothnumber666";
         private $dbname = "mysql";
+        private $success = false;
 
         public $fname = '';
         public $sname = '';
@@ -89,7 +90,7 @@
             $this->age = $age;
         }
 
-        function loadPerson($fname,$surname)
+        function loadPerson($fname,$sname)
         {
             $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
             // Check connection
@@ -97,20 +98,23 @@
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            $sql = "SELECT * FROM phptraining.Person WHERE firstname='".$fname."' AND surname='".$surname."'";
+            $sql = "SELECT * FROM phptraining.Person WHERE firstname='".$fname."' AND surname='".$sname."'";
 
             $result = $conn->query($sql);
+            $conn->close();
 
             if ($result->num_rows > 0) {
                 // output data of each row
-                while($row = $result->fetch_assoc()) {
-                    echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["surname"]. " (Date of Birth: "
-                        .$row["DateOfBirth"]."), email: ".$row["emailaddress"]." - Age: ".$row["age"]."<br>";
-                }
+                $row = $result->fetch_assoc();
+                /*echo "id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["surname"]. " (Date of Birth: "
+                        .$row["DateOfBirth"]."), email: ".$row["emailaddress"]." - Age: ".$row["age"]."<br>";*/
+                die(json_encode("id: " . $row["id"]. " - Name: " . $row["firstname"]. " " . $row["surname"]. " (Date of Birth: "
+                    .$row["Dateofbirth"]."), email: ".$row["emailaddress"]." - Age: ".$row["age"]));
             } else {
-                echo "0 results";
+                //echo "0 results";
+                die(json_encode($fname . " " . $sname . " doesn't exist"));
             }
-            $conn->close();
+
         }
 
         function savePerson()
@@ -124,19 +128,29 @@
 
             // sql to create table
 
-            $sql = "INSERT INTO phptraining.Person(firstname, surname, DateOfBirth, emailaddress,age)
+            $sql = "INSERT INTO phptraining.Person(firstname, surname, Dateofbirth, emailaddress,age)
             VALUES ('".$this->fname."','".$this->sname."','".$this->dob."','".$this->email."',$this->age)";
 
-            if ($conn->query($sql) === TRUE) {
-                echo $this->fname. " added successfully</br>";
-            } else {
-                echo "Error adding person: " . $conn->error;
+            $succeeded = false;
+
+            if ($conn->query($sql) === TRUE){
+                if($conn->affected_rows > 0) {
+                    $succeeded = true;
+                }
             }
 
             $conn->close();
+
+            if($succeeded == true)
+            {
+                die(json_encode($this->fname . " " . $this->sname . " has been created"));
+            }
+            else{
+                die(json_encode($this->fname . " " . $this->sname . " has not been created"));
+            }
         }
 
-        function deletePerson()
+        function deleteMe()
         {
             // Create connection
             $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
@@ -156,6 +170,36 @@
             }
 
             $conn->close();
+        }
+
+        function deletePerson($fname,$sname)
+        {
+            // Create connection
+            $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            // sql to create table
+
+            $sql = "DELETE FROM phptraining.Person WHERE firstname='".$fname."' AND surname='".$sname."'";
+
+            $succeeded = false;
+
+            if ($conn->query($sql) === TRUE){
+                if($conn->affected_rows > 0) {
+                    $succeeded = true;
+                }
+            }
+            $conn->close();
+
+            if($succeeded) {
+                die(json_encode($fname . " " . $sname . " has been deleted"));
+            }
+            else{
+                die(json_encode($fname . " " . $sname . " doesn't exist"));
+            }
         }
 
         function loadAllPeople()
@@ -204,11 +248,38 @@
             $conn->close();
             return;
         }
+
+        function updatePerson($fnameSelect,$fname,$sname,$date,$email,$age)
+        {
+            $conn = new mysqli($this->servername, $this->username, $this->password, $this->dbname);
+            // Check connection
+            if ($conn->connect_error) {
+                die("Connection failed: " . $conn->connect_error);
+            }
+
+            $sql = "UPDATE phptraining.Person SET firstname='".$fname."',surname='".$sname."',Dateofbirth='".$date."',
+                    emailaddress='".$email."', age=".$age. " WHERE firstname='".$fnameSelect."'";
+
+            $succeeded = false;
+
+            if ($conn->query($sql) === TRUE){
+                if($conn->affected_rows > 0) {
+                    $succeeded = true;
+                }
+            }
+            $conn->close();
+
+            if($succeeded) {
+                die(json_encode($fnameSelect ." has been updated"));
+            }
+            else{
+                die(json_encode($fnameSelect ." doesn't exist"));
+            }
+        }
     }
 
+    /* Foundation Task 6 alone
     $time_start = microtime(true);
-
-// Anywhere else in the script
 
     $person = new Person();
     $person->deleteAllPeople();
@@ -230,5 +301,35 @@
     echo "</br></br>";
 
     echo 'Total execution time in seconds: ' . (microtime(true) - $time_start);
+    */
+
+    //Foundation Task 7
+
+    if(isset($_POST['action']) && !empty($_POST['action'])) {
+        $user = new Person();
+        $action = $_POST['action'];
+        $fname = $_POST['fname'];
+        $sname = $_POST['sname'];
+        switch($action) {
+            case 'create' :
+                $date = $_POST['date'];
+                $email = $_POST['email'];
+                $age = $_POST['age'];
+                $user->createPerson($fname, $sname,$date,$email,$age);
+                $user->savePerson();
+                break;
+            case 'read' :
+                $user->loadPerson($fname,$sname);break;
+            case 'update' :
+                $fnameSelect = $_POST['fnameSelect'];
+                $date = $_POST['date'];
+                $email = $_POST['email'];
+                $age = $_POST['age'];
+                $user->updatePerson($fnameSelect,$fname,$sname,$date,$email,$age);break;
+            case 'delete' :
+                $user->deletePerson($fname,$sname);break;
+            default : break;
+        }
+    }
 
 

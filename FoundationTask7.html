@@ -4,13 +4,10 @@
     <meta charset="UTF-8">
     <title>Foundation Task 7</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/css">
-        div{
 
-        }
-    </script>
     <script>
         $(document).ready(function(){
+            //function to disable all buttons while in a single user option
             function disableAll()
             {
                 $("#createButton").prop('disabled',true);
@@ -18,6 +15,7 @@
                 $("#updateButton").prop('disabled',true);
                 $("#deleteButton").prop('disabled',true);
             }
+            //function to enable all buttons when back from a user option
             function enableAll()
             {
                 $("#createButton").prop('disabled',false);
@@ -26,39 +24,109 @@
                 $("#deleteButton").prop('disabled',false);
             }
 
+            //Create section
             $("#createButton").click(function(){
-                $("#creatediv").toggle();
+                $("#createDiv").toggle();
                 disableAll();
             });
             $("#createNow").click(function(){
-                $("#creatediv").toggle();
+
+                $.ajax({ url: 'FoundationTask6.php',
+                    data: {
+                        action: 'create', fname: $("#fnameCreate").val(), sname: $("#snameCreate").val(),
+                        date: $("#dateCreate").val().toString('yyyy-mm-dd'),
+                        email: $("#emailCreate").val(), age: $("#ageCreate").val()},
+                        type: 'POST',
+                        success: function (output) {
+                            $("#responseDiv span").text(output);
+                        }
+                });
+
+                $("#createDiv").toggle();
                 enableAll();
             });
+
+            //Read section
             $("#readButton").click(function(){
-                $("#readdiv").toggle();
+                $("#readDiv").toggle();
                 disableAll();
             });
             $("#readNow").click(function(){
-                $("#readdiv").toggle();
+                $.ajax({ url: 'FoundationTask6.php',
+                    data: {action: 'read', fname: $("#fnameRead").val(), sname : $("#snameRead").val()},
+                    type: 'POST',
+                    success: function(output) {
+                        $("#responseDiv span").text(output);
+                    }
+                });
+
+                $("#readDiv").toggle();
                 enableAll();
             });
+
+            //Update section
             $("#updateButton").click(function(){
-                $("#updatediv").toggle();
+                $("#updateDiv").toggle();
                 disableAll();
             });
+
             $("#updateNow").click(function(){
-                $("#updatediv").toggle();
+                $.ajax({ url: 'FoundationTask6.php',
+                    data: {action: 'update', fnameSelect: $("#fnameSelect").val(),
+                        fname: $("#fnameUpdate").val(), sname : $("#snameUpdate").val(),
+                        date: $("#dateUpdate").val().toString('yyyy-mm-dd'),
+                        email: $("#emailUpdate").val(), age: $("#ageUpdate").val()},
+                    type: 'POST',
+                    success: function(output) {
+                        $("#responseDiv span").text(output);
+                    }
+                });
+
+                $("#updateDiv").toggle();
                 enableAll();
             });
 
+            //Delete section
             $("#deleteButton").click(function(){
-                $("#deletediv").toggle();
+
+                $("#deleteDiv").toggle();
                 disableAll();
             });
+            $("#deleteNow").click(function(){
 
-            $("#deletediv").click(function(){
-                $("#deletediv").toggle();
+                $.ajax({ url: 'FoundationTask6.php',
+                    data: {action: 'delete', fname: $("#fnameDelete").val(), sname : $("#snameDelete").val()},
+                    type: 'POST',
+                    success: function(output) {
+                        $("#responseDiv span").text(output);
+                    }
+                });
+
+                $("#deleteDiv").toggle();
                 enableAll();
+            });
+
+            //Back button for all options
+            $(".back").click(function(){
+                enableAll();
+
+               if($("#createDiv").is(":visible"))
+               {
+                   $("#createDiv").toggle();
+               }
+               else if($("#readDiv").is(":visible"))
+               {
+                   $("#readDiv").toggle();
+               }
+               else if($("#updateDiv").is(":visible"))
+               {
+                   $("#updateDiv").toggle();
+               }
+               else if($("#deleteDiv").is(":visible"))
+               {
+                   $("#deleteDiv").toggle();
+               }
+
             });
         });
     </script>
@@ -77,69 +145,78 @@
             <input type="button" id="deleteButton" value="Delete Person">
         </fieldset>
     </form>
+    <div id="responseDiv"><br/><span></span></div>
 
-    <div id="creatediv" style="display: none">
+    <!--Div for Create User option-->
+    <div id="createDiv" style="display: none">
         <form>
             <fieldset>
                 <legend>Create Person</legend>
-                <label for="fname">First name:</label>
-                <input type="text" id="fname" name="fname"><br/><br/>
-                <label for="sname">Surname:</label>
-                <input type="text" id="sname" name="sname"><br/><br/>
-                <label for="date">Date:</label>
-                <input type="date" id="date" name="date"><br/><br/>
-                <label for="email">E-mail:</label>
-                <input type="text" id="email" name="email"><br/><br/>
-                <label for="age">Age:</label>
-                <input type="number" id="age" name="age" min="0" max="130"><br/><br/>
+                <label for="fnameCreate">First name:</label>
+                <input type="text" id="fnameCreate" name="fnameCreate"><br/><br/>
+                <label for="snameCreate">Surname:</label>
+                <input type="text" id="snameCreate" name="snameCreate"><br/><br/>
+                <label for="dateCreate">Date:</label>
+                <input type="date" id="dateCreate" name="dateCreate"><br/><br/>
+                <label for="emailCreate">E-mail:</label>
+                <input type="text" id="emailCreate" name="emailCreate"><br/><br/>
+                <label for="ageCreate">Age:</label>
+                <input type="number" id="ageCreate" name="ageCreate" min="0" max="130"><br/><br/>
                 <input type="button" id="createNow" value="Create Person">
+                <input type="button" class="back" value="Back">
             </fieldset>
-            <div id="replyCreate"></div>
         </form>
     </div>
-    <div id="readdiv" style="display: none">
+    <!--Div for Read User option-->
+    <div id="readDiv" style="display: none">
         <form>
             <fieldset>
                 <legend>Read Person</legend>
                 <label for="fnameRead">First name:</label>
                 <input type="text" id="fnameRead" name="readNow"><br/><br/>
+                <label for="snameRead">Surname:</label>
+                <input type="text" id="snameRead" name="snameRead"><br/><br/>
                 <input type="button" id="readNow" value="Read Person">
+                <input type="button" class="back" value="Back">
             </fieldset>
             <div id="replyRead"></div>
         </form>
     </div>
-    <div id="updatediv" style="display: none">
+    <!--Div for Update User option-->
+    <div id="updateDiv" style="display: none">
         <form>
             <fieldset>
                 <legend>Update Person</legend>
-                <label for="fnameSelect">Name of Person you wish to update:</label>
+                <label for="fnameSelect">First name of Person you wish to update:</label>
                 <input type="text" id="fnameSelect" name="fnameSelect"><br/><br/>
 
-                <label for="fnameUpdate">First name:</label>
+                <label for="fnameUpdate">New First name:</label>
                 <input type="text" id="fnameUpdate" name="fnameUpdate"><br/><br/>
-                <label for="snameUpdate">Surname:</label>
+                <label for="snameUpdate">New Surname:</label>
                 <input type="text" id="snameUpdate" name="snameUpdate"><br/><br/>
-                <label for="dateUpdate">Date:</label>
+                <label for="dateUpdate">New Date:</label>
                 <input type="date" id="dateUpdate" name="dateUpdate"><br/><br/>
-                <label for="emailUpdate">E-mail:</label>
+                <label for="emailUpdate">New E-mail:</label>
                 <input type="text" id="emailUpdate" name="emailUpdate"><br/><br/>
-                <label for="ageUpdate">Age:</label>
+                <label for="ageUpdate">New Age:</label>
                 <input type="number" id="ageUpdate" name="ageUpdate" min="0" max="130"><br/><br/>
-
                 <input type="button" id="updateNow" value="Update Person">
+                <input type="button" class="back" value="Back">
             </fieldset>
-            <div id="replyUpdate"></div>
         </form>
     </div>
-    <div id="deletediv" style="display: none">
+    <!--Div for Delete User option-->
+    <div id="deleteDiv" style="display: none">
         <form>
             <fieldset>
                 <legend>Delete Person</legend>
                 <label for="fnameDelete">First name:</label>
                 <input type="text" id="fnameDelete" name="fnameDelete"><br/><br/>
+                <label for="snameDelete">Surname:</label>
+                <input type="text" id="snameDelete" name="snameDelete"><br/><br/>
                 <input type="button" id="deleteNow" value="Delete Person">
+                <input type="button" class="back" value="Back">
             </fieldset>
-            <div id="replyDelete"></div>
         </form>
     </div>
 </body>
